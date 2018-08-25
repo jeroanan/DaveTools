@@ -3,15 +3,19 @@
   %INCLUDE 'mikedev.inc'
 
 start:
+  mov   di, .restofstring
+  call  os_string_copy
+
   mov   ax, si
   call  .check_file_out
   jc    .write_to_file
 
+  mov   ax, .restofstring
   mov   bx, .eol
   mov   cx, .outstr
   call  os_string_join        ; Take command-line param and put CRLF on the end.
 
-  mov   si, cx
+  mov   si, .outstr
   call  os_print_string       ; Print command-line param + CRLF string
 
   jmp   .end
@@ -24,14 +28,15 @@ start:
   mov   si, ax            ; Command-line parameters are to be passed in ax.
   call  os_string_parse
 
-  mov   si, ax
   mov   di, .file_flag    
   call  os_string_compare ; Check whether the first word of cmdline says that we should write to file
   jc    .set_write_file   ; If it is then go and indicate that this is the case
+
   ret
 
 .set_write_file:
   mov   ax, bx            ; Set ax to the second cmdline param (i.e. the file to write)
+
   stc                     ; Set carry flag -- this indicates that we will write to file
   ret
 
@@ -53,6 +58,10 @@ start:
   call  os_string_join    ; cx now contains first word + space + last words
 
   mov   ax, cx
+  mov   bx, .eol
+  call  os_string_join    ; Add a CRLF to the end
+
+  mov   ax, cx
   call  os_string_length
   mov   bx, ax            ; Store the string length in bx for now so we can do jiggery-pokery in a few lines
 
@@ -67,6 +76,7 @@ start:
   .eol          db 10, 13, 0
   .space        db ' ', 0
   .restofstring times 1000 db 0
+  .tracer       db 'here i am!', 10, 13, 0
 
 .end:
   ret
