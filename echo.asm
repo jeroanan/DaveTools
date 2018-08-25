@@ -76,7 +76,6 @@ start:
   .eol          db 10, 13, 0
   .space        db ' ', 0
   .restofstring times 1000 db 0
-  .tracer       db 'here i am!', 10, 13, 0
 
 .end:
   ret
