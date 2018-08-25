@@ -3,14 +3,14 @@
   %INCLUDE 'mikedev.inc'
 
 start:
-  mov   di, .restofstring
+  mov   di, .commandline     ; Store the whole command line in .commandline
   call  os_string_copy
 
   mov   ax, si
   call  .check_file_out
   jc    .write_to_file
 
-  mov   ax, .restofstring
+  mov   ax, .commandline
   mov   bx, .eol
   mov   cx, .outstr
   call  os_string_join        ; Take command-line param and put CRLF on the end.
@@ -76,6 +76,7 @@ start:
   .eol          db 10, 13, 0
   .space        db ' ', 0
   .restofstring times 1000 db 0
+  .commandline  times 1000 db 0
 
 .end:
   ret
