@@ -10,6 +10,11 @@ start:
   call  .check_file_out
   jc    .write_to_file
 
+  mov   si, .commandline
+  mov   di, .mysterystring
+  call  os_string_compare
+  jc    .end
+
   mov   ax, .commandline
   mov   bx, .eol
   mov   cx, .outstr
