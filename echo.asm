@@ -46,17 +46,28 @@ start:
   push  ax                    ; ax is our filename -- save for later
 
   mov   si, dx
+  lodsb
+  cmp   al, 0
+  je    .no_restof_string
+
+  mov   si, dx
   mov   di, .restofstring 
-  call os_string_copy         ; dx contains the final words of our input -- save for later
+  call  os_string_copy        ; dx contains the final words of our input -- save for later
 
   mov   ax, cx                ; The first word to echo was in cx
   mov   bx, .space            ; Put a space after the first word -- it was swallowed by earlier os_string_parse
   call  os_string_join
 
+  mov   si, .restofstring
+  mov   di, .mysterystring
+  call  os_string_compare
+  jc    .no_restof_string
+
   mov   ax, cx
   mov   bx, .restofstring
   call  os_string_join        ; cx now contains first word + space + last words
 
+.no_restof_string:
   mov   ax, cx
   mov   bx, .eol
   call  os_string_join        ; Add a CRLF to the end
@@ -77,7 +88,7 @@ start:
   .space        db ' ', 0
   .restofstring times 1000 db 0
   .commandline  times 1000 db 0
+  .mysterystring db 233, 207, 0
 
 .end:
   ret
-
