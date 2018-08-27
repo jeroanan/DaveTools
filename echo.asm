@@ -93,7 +93,7 @@ start:
   call  os_print_string
   pop   ax
 
-.end_of_write_to_file
+.end_of_write_to_file:
   ret
 
   .eol            db 10, 13, 0
